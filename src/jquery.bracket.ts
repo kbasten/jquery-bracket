@@ -5,9 +5,22 @@
  * http://aropupu.fi/bracket/
  *
  * Licenced under the MIT licence
+ *
+ * JQuery Actual Plugin:
+ * Copyright 2012, Ben Lin (http://dreamerslab.com/)
+ * Licensed under the MIT License (LICENSE.txt).
+ *
+ * Version: 1.0.16
+ *
+ * Requires: jQuery >= 1.2.3
  */
-
+ 
 /// <reference path="../lib/jquery.d.ts" />
+
+interface JQuery {
+  actual(method: string): number;
+  actual(method: string, options: Object): number;
+}
 
 interface Connector {
   height: number;
@@ -274,9 +287,9 @@ interface Options {
             tC.css('top', '');
             tC.css('position', 'absolute');
             if (skipConsolationRound)
-              tC.css('top', (match.el.height() / 2 - tC.height() / 2) + 'px');
+              tC.css('top', (match.el.actual('height') / 2 - tC.actual('height') / 2) + 'px');
             else
-              tC.css('bottom', (-tC.height() / 2) + 'px');
+              tC.css('bottom', (-tC.actual('height') / 2) + 'px');
           })
         }
       }
@@ -300,10 +313,10 @@ interface Options {
           consolationBubbles)
 
         consol.setAlignCb(function(tC) {
-          var height = (winners.el.height()) / 2
+          var height = (winners.el.actual('height')) / 2
           consol.el.css('height', (height) + 'px');
 
-          var topShift = tC.height()
+          var topShift = tC.actual('height')
 
           tC.css('top', (topShift) + 'px');
         })
@@ -354,7 +367,7 @@ interface Options {
           var match = round.addMatch(teamCb)
           var teamCon = match.el.find('.teamContainer')
           match.setAlignCb(function() {
-            teamCon.css('top', (match.el.height() / 2 - teamCon.height() / 2) + 'px');
+            teamCon.css('top', (match.el.actual('height') / 2 - teamCon.actual('height') / 2) + 'px');
           })
 
           if (r < rounds - 1 || n < 1) {
@@ -362,7 +375,7 @@ interface Options {
             // inside lower bracket
             if (n % 2 === 0) {
               cb = function(tC, match): Connector {
-                var connectorOffset = tC.height() / 4
+                var connectorOffset = tC.actual('height') / 4
                 var height = 0;
                 var shift = 0;
 
@@ -429,17 +442,17 @@ interface Options {
             winnerBubbles)
 
           match.connectorCb(function(tC): Connector {
-            return {height: 0, shift: tC.height() / 2}
+            return {height: 0, shift: tC.actual('height') / 2}
           })
 
           match2.connectorCb(function() {
             return null
           })
           match2.setAlignCb(function(tC) {
-            var height = (winners.el.height() + losers.el.height())
+            var height = (winners.el.actual('height') + losers.el.actual('height'))
             match2.el.css('height', (height) + 'px');
 
-            var topShift = (winners.el.height() / 2 + winners.el.height() + losers.el.height() / 2) / 2 - tC.height()
+            var topShift = (winners.el.actual('height') / 2 + winners.el.actual('height') + losers.el.actual('height') / 2) / 2 - tC.actual('height')
 
             tC.css('top', (topShift) + 'px')
           })
@@ -451,12 +464,12 @@ interface Options {
       })
 
     match.setAlignCb(function(tC) {
-      var height = (winners.el.height() + losers.el.height())
+      var height = (winners.el.actual('height') + losers.el.actual('height'))
       if (!skipConsolationRound)
         height /= 2
       match.el.css('height', (height) + 'px');
 
-      var topShift = (winners.el.height() / 2 + winners.el.height() + losers.el.height() / 2) / 2 - tC.height()
+      var topShift = (winners.el.actual('height') / 2 + winners.el.actual('height') + losers.el.actual('height') / 2) / 2 - tC.actual('height')
 
       tC.css('top', (topShift) + 'px')
     })
@@ -474,10 +487,10 @@ interface Options {
         },
         consolationBubbles)
       consol.setAlignCb(function(tC) {
-        var height = (winners.el.height() + losers.el.height()) / 2
+        var height = (winners.el.actual('height') + losers.el.actual('height')) / 2
         consol.el.css('height', (height) + 'px');
 
-        var topShift = (winners.el.height() / 2 + winners.el.height() + losers.el.height() / 2) / 2 + tC.height() / 2 - height
+        var topShift = (winners.el.actual('height') / 2 + winners.el.actual('height') + losers.el.actual('height') / 2) / 2 + tC.actual('height') / 2 - height
 
         tC.css('top', (topShift) + 'px');
       })
@@ -491,9 +504,9 @@ interface Options {
     }
 
     winners.final().connectorCb(function(tC): Connector {
-      var connectorOffset = tC.height() / 4
-      var topShift = (winners.el.height() / 2 + winners.el.height() + losers.el.height() / 2) / 2 - tC.height() / 2
-      var matchupOffset = topShift - winners.el.height() / 2
+      var connectorOffset = tC.actual('height') / 4
+      var topShift = (winners.el.actual('height') / 2 + winners.el.actual('height') + losers.el.actual('height') / 2) / 2 - tC.actual('height') / 2
+      var matchupOffset = topShift - winners.el.actual('height') / 2
       if (winners.winner().id === 0) {
         height = matchupOffset + connectorOffset * 2
         shift = connectorOffset
@@ -506,14 +519,14 @@ interface Options {
         height = matchupOffset + connectorOffset
         shift = connectorOffset * 2
       }
-      height -= tC.height() / 2
+      height -= tC.actual('height') / 2
       return {height: height, shift: shift}
     })
 
     losers.final().connectorCb(function(tC): Connector {
-      var connectorOffset = tC.height() / 4
-      var topShift = (winners.el.height() / 2 + winners.el.height() + losers.el.height() / 2) / 2 - tC.height() / 2
-      var matchupOffset = topShift - winners.el.height() / 2
+      var connectorOffset = tC.actual('height') / 4
+      var topShift = (winners.el.actual('height') / 2 + winners.el.actual('height') + losers.el.actual('height') / 2) / 2 - tC.actual('height') / 2
+      var matchupOffset = topShift - winners.el.actual('height') / 2
       if (losers.winner().id === 0) {
         height = matchupOffset
         shift = connectorOffset * 3
@@ -526,7 +539,7 @@ interface Options {
         height = matchupOffset + connectorOffset
         shift = connectorOffset * 2
       }
-      height += tC.height() / 2
+      height += tC.actual('height') / 2
       return {height: -height, shift: -shift}
     })
   }
@@ -794,7 +807,7 @@ interface Options {
 
         var name = !team.name ? '--' : team.name
         var tEl = $('<div class="team"></div>');
-        var nEl = $('<div class="label"></div>').appendTo(tEl)
+        var nEl = $('<div class="bracket-label"></div>').appendTo(tEl)
 
         if (round === 0)
           tEl.attr('data-resultid', 'team-' + rId)
@@ -824,7 +837,7 @@ interface Options {
                   opts.init.teams[~~(team.idx / 2)][team.idx % 2] = val
                 renderAll(true)
                 span.click(editor)
-                var labels = opts.el.find('.team[data-teamid=' + (team.idx + 1) + '] div.label:first')
+                var labels = opts.el.find('.team[data-teamid=' + (team.idx + 1) + '] div.bracket-label:first')
                 if (labels.length && next === true && round === 0)
                   $(labels).click()
               }
@@ -898,7 +911,7 @@ interface Options {
       var connectorCb: ConnectorProvider = null
       var alignCb = null
 
-      var matchCon = $('<div class="match"></div>')
+      var matchCon = $('<div class="b-match"></div>')
       var teamCon = $('<div class="teamContainer"></div>')
 
       if (!opts.save) {
@@ -937,8 +950,8 @@ interface Options {
           connectorCb = cb
         },
         connect: function(cb: ConnectorProvider) {
-          var connectorOffset = teamCon.height() / 4
-          var matchupOffset = matchCon.height() / 2
+          var connectorOffset = teamCon.actual('height') / 4
+          var matchupOffset = matchCon.actual('height') / 2
           var shift
           var height
 
@@ -1017,8 +1030,8 @@ interface Options {
           matchCon.appendTo(round.el)
           matchCon.append(teamCon)
 
-          this.el.css('height', (round.bracket.el.height() / round.size()) + 'px');
-          teamCon.css('top', (this.el.height() / 2 - teamCon.height() / 2) + 'px');
+          this.el.css('height', (round.bracket.el.actual('height') / round.size()) + 'px');
+          teamCon.css('top', (this.el.actual('height') / 2 - teamCon.actual('height') / 2) + 'px');
 
           /* todo: move to class */
           if (alignCb)
@@ -1136,7 +1149,7 @@ interface Options {
     }
 
     if (lEl)
-      lEl.css('height', wEl.height() / 2)
+      lEl.css('height', wEl.actual('height') / 2)
 
     var rounds
     if (isSingleElimination)
@@ -1203,4 +1216,90 @@ interface Options {
       $.error('Method ' + method + ' does not exist on jQuery.bracket')
     }
   }
+  
+    $.fn.actual = function ( method, options ){
+      // check if the jQuery method exist
+      if( !this[ method ]){
+        throw '$.actual => The jQuery method "' + method + '" you called does not exist';
+      }
+
+      var defaults = {
+        absolute      : false,
+        clone         : false,
+        includeMargin : false
+      };
+
+      var configs = $.extend( defaults, options );
+
+      var $target = this.eq( 0 );
+      var fix, restore;
+
+      if( configs.clone === true ){
+        fix = function (){
+          var style = 'position: absolute !important; top: -1000 !important; ';
+
+          // this is useful with css3pie
+          $target = $target.
+            clone().
+            attr( 'style', style ).
+            appendTo( 'body' );
+        };
+
+        restore = function (){
+          // remove DOM element after getting the width
+          $target.remove();
+        };
+      }else{
+        var tmp   = [];
+        var style = '';
+        var $hidden;
+
+        fix = function (){
+          // get all hidden parents
+          $hidden = $target.parents().addBack().filter( ':hidden' );
+          style   += 'visibility: hidden !important; display: block !important; ';
+
+          if( configs.absolute === true ) style += 'position: absolute !important; ';
+
+          // save the origin style props
+          // set the hidden el css to be got the actual value later
+          $hidden.each( function (){
+            // Save original style. If no style was set, attr() returns undefined
+            var $this     = $( this );
+            var thisStyle = $this.attr( 'style' );
+
+            tmp.push( thisStyle );
+            // Retain as much of the original style as possible, if there is one
+            $this.attr( 'style', thisStyle ? thisStyle + ';' + style : style );
+          });
+        };
+
+        restore = function (){
+          // restore origin style values
+          $hidden.each( function ( i ){
+            var $this = $( this );
+            var _tmp  = tmp[ i ];
+
+            if( _tmp === undefined ){
+              $this.removeAttr( 'style' );
+            }else{
+              $this.attr( 'style', _tmp );
+            }
+          });
+        };
+      }
+
+      fix();
+      // get the actual value with user specific methed
+      // it can be 'width', 'height', 'outerWidth', 'innerWidth'... etc
+      // configs.includeMargin only works for 'outerWidth' and 'outerHeight'
+      var actual = /(outer)/.test( method ) ?
+        $target[ method ]( configs.includeMargin ) :
+        $target[ method ]();
+
+      restore();
+      // IMPORTANT, this plugin only return the value of the first element
+      return actual;
+    }
+
 })(jQuery)
